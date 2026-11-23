@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::section})}">
+<head><meta charset="UTF-8"></head>
+<body>
+<section>
+  <div class="page-header">
+    <h1>Nueva venta</h1>
+    <a class="btn btn-outline-secondary" th:href="@{/ventas}">Volver</a>
+  </div>
+  <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+  <div class="form-panel">
+    <form th:action="@{/ventas}" method="post" data-venta-form>
+      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+      <div class="row g-3 mb-4">
+        <div class="col-md-4">
+          <label class="form-label">Cliente</label>
+          <input class="form-control" name="clienteNombre">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Documento</label>
+          <input class="form-control" name="clienteDocumento">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Teléfono</label>
+          <input class="form-control" name="clienteTelefono">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Método de pago</label>
+          <select class="form-select" name="metodoPago" required>
+            <option>Efectivo</option>
+            <option>Transferencia</option>
+            <option>Tarjeta</option>
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Observaciones</label>
+          <input class="form-control" name="observaciones">
+        </div>
+      </div>
+
+      <h2 class="h5">Productos</h2>
+      <div class="table-responsive">
+        <table class="table align-middle">
+          <thead>
+          <tr><th>Producto</th><th>Cantidad</th><th>Precio venta</th><th>Subtotal</th><th class="text-center">Acción</th></tr>
+          </thead>
+          <tbody id="productos">
+          <tr class="item-row">
+            <td>
+              <select class="form-select" name="productoId" data-product-select>
+                <option value="">Seleccione producto (opcional)</option>
+                <option th:each="p:${productos}" th:value="${p.id}"
+                        th:text="${p.nombre + ' (Stock: ' + p.stock + ')'}"
+                        th:attr="data-price=${p.precioVenta}"></option>
+              </select>
+            </td>
+            <td><input class="form-control" type="number" min="1" name="cantidad" value="1" data-quantity></td>
+            <td><input class="form-control" type="number" min="0" step="0.01" name="precio" data-unit-price></td>
+            <td class="text-nowrap" data-line-total>$ 0</td>
+            <td class="text-center">
+              <button type="button" class="btn btn-sm btn-outline-danger" data-remove-row title="Quitar producto">
+                <i class="bi bi-trash"></i>
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <button type="button" class="btn btn-outline-secondary mb-4" data-clone-row="productos">
+        <i class="bi bi-plus-lg"></i> Agregar producto
+      </button>
+
+      <h2 class="h5">Servicios</h2>
+      <div class="table-responsive">
+        <table class="table align-middle">
+          <thead>
+          <tr><th>Descripción</th><th>Precio</th><th>Subtotal</th><th class="text-center">Acción</th></tr>
+          </thead>
+          <tbody id="servicios">
+          <tr class="item-row">
+            <td><input class="form-control" name="servicioDescripcion" maxlength="255"
+                       placeholder="Ej. Reparación de ventilador"></td>
+            <td><input class="form-control" type="number" min="0" step="0.01" name="servicioPrecio" data-service-price></td>
+            <td class="text-nowrap" data-line-total>$ 0</td>
+            <td class="text-center">
+              <button type="button" class="btn btn-sm btn-outline-danger" data-remove-row title="Quitar servicio">
+                <i class="bi bi-trash"></i>
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <button type="button" class="btn btn-outline-secondary mb-4" data-clone-row="servicios">
+        <i class="bi bi-plus-lg"></i> Agregar servicio
+      </button>
+      <div class="d-flex justify-content-end align-items-center gap-3 p-3 mb-4 border rounded bg-light">
+        <span>Total estimado</span>
+        <strong id="ventaTotal">$ 0</strong>
+      </div>
+      <div><button class="btn btn-danger">Guardar venta</button></div>
+    </form>
+  </div>
+</section>
+</body>
+</html>

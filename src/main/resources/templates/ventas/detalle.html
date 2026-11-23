@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::section})}">
+<head><meta charset="UTF-8"></head>
+<body>
+<section>
+  <div class="page-header">
+    <h1>Detalle de venta</h1>
+    <div class="d-flex gap-2">
+      <button class="btn btn-danger no-print" type="button" onclick="window.print()">
+        <i class="bi bi-printer"></i> Imprimir recibo
+      </button>
+      <a class="btn btn-outline-secondary no-print" th:href="@{/ventas}">Volver</a>
+    </div>
+  </div>
+  <div class="form-panel mb-3">
+    <div class="receipt-heading">
+      <img class="receipt-logo" th:src="@{/img/Logo-New.jpeg}" alt="Repuestos LA 21">
+      <div>
+        <h2 class="h5 mb-1" th:text="'Recibo de venta #' + ${venta.id}"></h2>
+        <span class="text-secondary" th:text="${#temporals.format(venta.fecha,'dd/MM/yyyy HH:mm')}"></span>
+      </div>
+    </div>
+    <dl class="receipt-info mb-0">
+      <div><dt>Cliente</dt><dd th:text="${venta.clienteNombre==null or #strings.isEmpty(venta.clienteNombre)?'Cliente general':venta.clienteNombre}"></dd></div>
+      <div th:if="${venta.clienteDocumento != null}"><dt>Documento</dt><dd th:text="${venta.clienteDocumento}"></dd></div>
+      <div th:if="${venta.clienteTelefono != null}"><dt>Teléfono</dt><dd th:text="${venta.clienteTelefono}"></dd></div>
+      <div><dt>Forma de pago</dt><dd th:text="${venta.metodoPago}"></dd></div>
+      <div th:if="${venta.observaciones != null}"><dt>Observaciones</dt><dd th:text="${venta.observaciones}"></dd></div>
+    </dl>
+    <div class="mt-3 fw-bold" th:text="'Total: $ ' + ${#numbers.formatDecimal(venta.total * 1000,1,'POINT',0,'COMMA')}"></div>
+  </div>
+  <div class="table-panel table-responsive">
+    <table class="table">
+      <thead><tr><th>Producto o servicio</th><th>Cantidad</th><th>Precio</th><th>Subtotal</th></tr></thead>
+      <tbody>
+      <tr th:each="d:${detalles}">
+        <td th:text="${d.productoNombre}"></td>
+        <td th:text="${d.cantidad}"></td>
+        <td th:text="'$ ' + ${#numbers.formatDecimal(d.precioVenta * 1000,1,'POINT',0,'COMMA')}"></td>
+        <td th:text="'$ ' + ${#numbers.formatDecimal(d.subtotal * 1000,1,'POINT',0,'COMMA')}"></td>
+      </tr>
+      <tr th:each="s:${servicios}">
+        <td th:text="${s.descripcion}"></td>
+        <td th:text="${s.cantidad}"></td>
+        <td th:text="'$ ' + ${#numbers.formatDecimal(s.precio * 1000,1,'POINT',0,'COMMA')}"></td>
+        <td th:text="'$ ' + ${#numbers.formatDecimal(s.subtotal * 1000,1,'POINT',0,'COMMA')}"></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+</body>
+</html>
